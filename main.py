@@ -2,13 +2,13 @@ import os
 import base64
 
 from flask import Flask, request
-from model import Message 
+from model import Message
+from markupsafe import escape 
 
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-
     if request.method == 'POST':
         m = Message(content=request.form['content'])
         m.save()
@@ -31,11 +31,17 @@ def home():
 <div class="message">
 {}
 </div>
-""".format(m.content.replace('<', '&lt;').replace('>', '&gt;'))
+""".format(escape(m.content))  
 
-    return body 
+    body += """
+</body>
+</html>
+"""
+    
+    return body
 
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 6738))
     app.run(host='0.0.0.0', port=port)
+
