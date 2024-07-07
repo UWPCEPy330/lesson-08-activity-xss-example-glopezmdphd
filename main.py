@@ -1,9 +1,8 @@
 import os
 import base64
-
 from flask import Flask, request
 from model import Message
-from markupsafe import escape 
+from markupsafe import escape  # Import escape from markupsafe
 
 app = Flask(__name__)
 
@@ -31,7 +30,7 @@ def home():
 <div class="message">
 {}
 </div>
-""".format(escape(m.content))  
+""".format(escape(m.content))  # Use escape to sanitize the message content
 
     body += """
 </body>
@@ -39,7 +38,6 @@ def home():
 """
     
     return body
-
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 6738))
