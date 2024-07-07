@@ -1,19 +1,21 @@
 import os
 import base64
-from flask import Flask, request, redirect, url_for
-from model import Message
-from markupsafe import escape
-import peewee
+import html
+from flask import Flask, request
+from model import Message 
 
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
+        content = request.form['content']
+        # Sanitize the input to escape HTML special characters
+        sanitized_content = html.escape(content)
+        m = Message(content=sanitized_content)
         try:
-            m = Message(content=request.form['content'])
             m.save()
-        except peewee.IntegrityError:
+        except Exception as e:
             return "Duplicate entry detected. Please submit a unique message."
 
     body = """
@@ -34,17 +36,15 @@ def home():
 <div class="message">
 {}
 </div>
-""".format(escape(m.content))
+""".format(m.content)
 
     body += """
 </body>
 </html>
 """
-    
-    return body
+    return body 
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 6738))
     app.run(host='0.0.0.0', port=port)
-
 
