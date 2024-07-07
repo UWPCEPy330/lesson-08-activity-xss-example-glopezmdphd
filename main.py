@@ -11,9 +11,8 @@ def home():
         content = request.form['content']
         # Sanitize the input to escape HTML special characters
         sanitized_content = html.escape(content)
-        m = Message(content=sanitized_content)
         try:
-            m.save()
+            m = Message.create(content=sanitized_content)
         except Exception as e:
             return "Duplicate entry detected. Please submit a unique message."
 
@@ -29,13 +28,13 @@ def home():
 
 <h2>Wisdom From Your Fellow Classmates</h2>
 """
-    
+
     for m in Message.select():
-        body += """
+        body += f"""
 <div class="message">
-{}
+{m.content}
 </div>
-""".format(m.content)
+"""
 
     body += """
 </body>
@@ -46,6 +45,7 @@ def home():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 6738))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
