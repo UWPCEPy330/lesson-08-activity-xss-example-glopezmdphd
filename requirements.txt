@@ -4,4 +4,5 @@ itsdangerous==2.1.2
 Jinja2==3.1.2
 MarkupSafe==2.1.2
 peewee==3.15.4
+psycopg2-binary==2.9.9
 Werkzeug==2.2.3
